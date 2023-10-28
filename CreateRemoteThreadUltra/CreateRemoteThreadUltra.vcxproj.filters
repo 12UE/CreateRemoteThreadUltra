@@ -18,5 +18,8 @@
     <ClCompile Include="CreateRemoteThreadUltra.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="ReadMe.md">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
