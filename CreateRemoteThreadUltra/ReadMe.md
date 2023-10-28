@@ -1,38 +1,7 @@
-# CreateRemoteThreadUltra
-	CreateRemoteThread: how to pass multiple parameters to the remote thread function without shellcode.
+The `CreateRemoteThread` function from `kernel32.dll` allows you to create a thread in the virtual address space of another process. It is commonly used for process or shellcode injection purposes. By using this function, you can force a remote process to load an arbitrary DLL by opening a new thread within it. The address of the `LoadLibrary` function is passed as the fourth parameter (`lpStartAddress`), and a pointer to the string representing the DLL to be loaded is passed as the fifth parameter (`lpParameter`).
 
-# The Function
-```c++
-HANDLE WINAPI CreateRemoteThread(
-  _In_   HANDLE hProcess,
-  _In_   LPSECURITY_ATTRIBUTES lpThreadAttributes,
-  _In_   SIZE_T dwStackSize,
-  _In_   LPTHREAD_START_ROUTINE lpStartAddress,
-  _In_   LPVOID lpParameter,
-  _In_   DWORD dwCreationFlags,
-  _Out_  LPDWORD lpThreadId
-);
-```
-	As stated by the related MSDN page, the CreateRemoteThread API from kernel32.dll 
-creates a thread that runs in the virtual address space of another process. 
+The problem arises when the remote function expects multiple parameters. The standard DLL injection technique works because the `LoadLibrary` function expects only one parameter. But what if the remote function, such as `MessageBox`, expects multiple parameters?
 
-This API is often used for process or shellcode injection purposes. Standard dll injection
+Some people on the internet have claimed that passing more than one argument to the remote function is impossible. However, this repository aims to address that claim and provide a solution to pass multiple parameters to the remote function without resorting to shellcode.
 
-is perhaps the most common amongst these techniques. CreateRemoteThread can 'force'
-
-the remote process to load an arbitrary .dll by opening a new thread in it. 
-
-The LoadLibrary address is passed to the API as LPTHREAD_START_ROUTINE (4th parameter), 
-
-while a pointer to the string (.dll to be loaded) written in the remote process is passed as 5th parameter.
-# The problem
-	Standard .dll injection works because the LoadLibrary API expects one parameter only. 
-But what if the remote function expects multiple parameters?
-
-What if the function is MessageBox for instance? (MessageBox expects four parameters).
-
-I wanted to create this repository because some people on the Internet have said 
-
-that passing more than one argument to the remote function is impossible.
-# References
-https://github.com/lem0nSec/CreateRemoteThreadPlus
+For more information and code examples, you can refer to the following repository: [CreateRemoteThreadPlus](https://github.com/lem0nSec/CreateRemoteThreadPlus)
