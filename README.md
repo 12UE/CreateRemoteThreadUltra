@@ -1,5 +1,5 @@
 # CreateRemoteThreadUltra
-CreateRemoteThread: how to pass multiple parameters to the remote thread function without shellcode.
+CreateRemoteThread: how to pass multiple parameters to the remote thread function without shellcode. support x86&x64
 
 ```c++
 HANDLE WINAPI CreateRemoteThread(
