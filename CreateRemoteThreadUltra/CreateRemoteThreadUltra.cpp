@@ -264,7 +264,7 @@ void Process::RemoteThreadShell(BYTE* Shell, BYTE* param, int nShellSize, int Pa
         auto pThreadParam = make_Shared<BYTE>(ParamnSize);
         if (!pThreadFunc || !pThreadParam)throw std::exception("make_Shared is nullptr");
         _WriteApi(pThreadFunc.get(), Shell, nShellSize);
-        _WriteApi(pThreadParam.get(), param, ParamnSize);
+        _WriteApi(pThreadParam.get(), param, ParamnSize); 
         HANDLE hThread = CreateRemoteThread(m_hProcess, NULL, 0, (LPTHREAD_START_ROUTINE)pThreadFunc.get(), pThreadParam.get(), 0, NULL);
         if (hThread) {
             WaitForSingleObject(hThread, INFINITE);

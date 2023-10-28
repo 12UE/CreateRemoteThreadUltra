@@ -2,6 +2,8 @@ The `CreateRemoteThread` function from `kernel32.dll` allows you to create a thr
 
 The problem arises when the remote function expects multiple parameters. The standard DLL injection technique works because the `LoadLibrary` function expects only one parameter. But what if the remote function, such as `MessageBox`, expects multiple parameters?
 
-Some people on the internet have claimed that passing more than one argument to the remote function is impossible. However, this repository aims to address that claim and provide a solution to pass multiple parameters to the remote function without resorting to shellcode.
+Some people on the internet have claimed that passing more than one argument to the remote function is impossible. 
+
+However, this repository aims to address that claim and provide a solution to pass multiple parameters to the remote function without resorting to shellcode.
 
 For more information and code examples, you can refer to the following repository: [CreateRemoteThreadPlus](https://github.com/lem0nSec/CreateRemoteThreadPlus)
