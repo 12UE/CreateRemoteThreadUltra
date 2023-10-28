@@ -252,7 +252,7 @@ void Process::processparameter(const char*& arg)
     if (p) {
         m_vecAllocMem.push_back(p);
         _WriteApi((LPVOID)p.get(), (LPVOID)arg, nlen * sizeof(char));
-        arg = (const char*)p.get();
+        arg = (const char*)p.raw();
     }
 }
 
