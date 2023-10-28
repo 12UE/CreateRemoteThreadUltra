@@ -13,7 +13,7 @@ HANDLE WINAPI CreateRemoteThread(
 );
 ```
 
-#The Function
+# The Function
   As stated by the related MSDN page, the CreateRemoteThread API from kernel32.dll 
 creates a thread that runs in the virtual address space of another process. This 
 API is often used for process or shellcode injection purposes. Standard dll injection
@@ -27,5 +27,5 @@ But what if the remote function expects multiple parameters?
 What if the function is MessageBox for instance? (MessageBox expects four parameters).
 I wanted to create this repository because some people on the Internet have said 
 that passing more than one argument to the remote function is impossible.
-#References
+# References
 https://github.com/lem0nSec/CreateRemoteThreadPlus
