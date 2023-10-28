@@ -14,18 +14,13 @@ HANDLE WINAPI CreateRemoteThread(
 ```
 
 # The Function
-  As stated by the related MSDN page, the CreateRemoteThread API from kernel32.dll 
-creates a thread that runs in the virtual address space of another process. This 
-API is often used for process or shellcode injection purposes. Standard dll injection
-is perhaps the most common amongst these techniques. CreateRemoteThread can 'force'
-the remote process to load an arbitrary .dll by opening a new thread in it. 
-The LoadLibrary address is passed to the API as LPTHREAD_START_ROUTINE (4th parameter), 
-while a pointer to the string (.dll to be loaded) written in the remote process is passed as 5th parameter.
-#The problem
-  Standard .dll injection works because the LoadLibrary API expects one parameter only. 
-But what if the remote function expects multiple parameters?
-What if the function is MessageBox for instance? (MessageBox expects four parameters).
-I wanted to create this repository because some people on the Internet have said 
-that passing more than one argument to the remote function is impossible.
+  According to the MSDN documentation, the `CreateRemoteThread` API from `kernel32.dll` allows the creation of a thread within the virtual address space of another process. This API is commonly used for process or shellcode injection purposes, with standard DLL injection being one of the most prevalent techniques. By using `CreateRemoteThread`, it is possible to "force" a remote process to load an arbitrary DLL by creating a new thread within it. The address of the `LoadLibrary` function is passed to the API as the fourth parameter (`lpStartAddress`), while a pointer to the string representing the DLL to be loaded is passed as the fifth parameter (`lpParameter`).
+
+However, a challenge arises when the remote function expects multiple parameters. Standard DLL injection works because the `LoadLibrary` function only requires one parameter. But what if the remote function, such as `MessageBox`, expects multiple parameters? For example, `MessageBox` typically requires four parameters.
+
+The motivation for creating this repository is to address the claim made by some individuals on the internet that passing more than one argument to a remote function is impossible. The repository aims to provide a solution for passing multiple parameters to a remote function without resorting to shellcode.
+
+For more detailed information and code examples related to this topic, you can refer to the following repository:
+
 # References
-https://github.com/lem0nSec/CreateRemoteThreadPlus
+[CreateRemoteThreadPlus](https://github.com/lem0nSec/CreateRemoteThreadPlus).
