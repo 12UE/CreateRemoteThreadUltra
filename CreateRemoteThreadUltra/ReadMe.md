@@ -14,17 +14,25 @@ HANDLE WINAPI CreateRemoteThread(
 );
 ```
 	As stated by the related MSDN page, the CreateRemoteThread API from kernel32.dll 
-creates a thread that runs in the virtual address space of another process. This 
-API is often used for process or shellcode injection purposes. Standard dll injection
+creates a thread that runs in the virtual address space of another process. 
+
+This API is often used for process or shellcode injection purposes. Standard dll injection
+
 is perhaps the most common amongst these techniques. CreateRemoteThread can 'force'
+
 the remote process to load an arbitrary .dll by opening a new thread in it. 
+
 The LoadLibrary address is passed to the API as LPTHREAD_START_ROUTINE (4th parameter), 
+
 while a pointer to the string (.dll to be loaded) written in the remote process is passed as 5th parameter.
 # The problem
 	Standard .dll injection works because the LoadLibrary API expects one parameter only. 
 But what if the remote function expects multiple parameters?
+
 What if the function is MessageBox for instance? (MessageBox expects four parameters).
+
 I wanted to create this repository because some people on the Internet have said 
+
 that passing more than one argument to the remote function is impossible.
 # References
 https://github.com/lem0nSec/CreateRemoteThreadPlus
