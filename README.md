@@ -20,7 +20,7 @@ However, a challenge arises when the remote function expects multiple parameters
 
 The motivation for creating this repository is to address the claim made by some individuals on the internet that passing more than one argument to a remote function is impossible. The repository aims to provide a solution for passing multiple parameters to a remote function without resorting to shellcode.
 
-For more detailed information and code examples related to this topic, you can refer to the following repository:
+For more detailed information and code examples related to this topic, you can refer to the following repository:[CreateRemoteThreadPlus](https://github.com/lem0nSec/CreateRemoteThreadPlus).
 # The Problem
 When using the `CreateRemoteThread` function from `kernel32.dll` to create a remote thread, typically only one parameter can be passed to the remote thread function. This is because the fifth parameter `lpParameter` of the `CreateRemoteThread` function accepts only a single `LPVOID` parameter, which is a pointer to arbitrary data.
 
