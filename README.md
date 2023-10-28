@@ -12,6 +12,7 @@ HANDLE WINAPI CreateRemoteThread(
   _Out_  LPDWORD lpThreadId
 );
 ```
+
 #The Function
   As stated by the related MSDN page, the CreateRemoteThread API from kernel32.dll 
 creates a thread that runs in the virtual address space of another process. This 
