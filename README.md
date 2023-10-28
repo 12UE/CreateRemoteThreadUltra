@@ -1,4 +1,4 @@
-# CreateRemoteThread-Ultra
+# Create Remote Thread Ultra
 CreateRemoteThread: how to pass multiple parameters to the remote thread function without shellcode. support x86 and x64.
 
 ```c++
