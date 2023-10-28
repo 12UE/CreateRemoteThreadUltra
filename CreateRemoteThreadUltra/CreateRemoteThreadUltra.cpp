@@ -8,6 +8,7 @@
 #include <algorithm>
 #include <mutex>
 #include <vector>
+#include <tuple>
 #if defined _WIN64
 using UDWORD = DWORD64;
 #define XIP Rip
@@ -154,7 +155,7 @@ public:
         if constexpr (sizeof...(args))process(args...);
         // 创建一个 ThreadData 对象，将函数对象和参数存储在其中
         ThreadData<std::decay_t<_Fn>, std::decay_t<Arg>...> threadData{};
-        threadData.datas = std::tuple(std::forward<std::decay_t<_Fn>>(_Fx), std::forward<Arg>(args)...);
+        threadData.datas = std::tuple<std::decay_t<_Fn>, std::decay_t<Arg>...>(std::forward<std::decay_t<_Fn>>(_Fx), std::forward<Arg>(args)...);
         // 获取 ThreadFunction 的长度
         auto pThreadFunc = &ThreadFunction< std::decay_t<_Fn>, std::decay_t<Arg>...>;
         int length = GetLength((BYTE*)pThreadFunc);
@@ -241,7 +242,7 @@ public:
 int main()
 {
     auto & Process = Process::GetInstance();
-    Process.Attach("notepad.exe");
+    Process.Attach("QQ.exe");
     Process.RemoteThreadCall(MessageBoxA, nullptr, "Hello World", "Hello World", 0);
 
 }
