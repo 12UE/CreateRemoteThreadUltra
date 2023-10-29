@@ -1,7 +1,7 @@
 ﻿
 #include <iostream>
 #include <Windows.h>
-#include <Zydis/Zydis.h>
+#include <Zydis/Zydis.h>//through vcpkg install Zydis:x64-windows:vcpkg.exe install Zydis:x64-windows-static
 #include <TlHelp32.h>
 #pragma comment(lib,"Zydis.lib")
 #include <atomic>
@@ -22,46 +22,43 @@ using UDWORD = DWORD32;
 #define U64_ "%x"//U64_ When using, be careful not to add "%" again
 constexpr auto USERADDR_MAX = 0xBFFE'FFFF;//address max
 #endif
-UDWORD GetLength(BYTE* _buffer, UDWORD _length = 65535) {//Get the length of the function
+UDWORD GetLength(BYTE* _buffer, UDWORD _length = 65535) {//Get the length of the function default 65535 because the function is not so long
     ZyanU64 runtime_address = (ZyanU64)_buffer;
     ZyanUSize offset = 0;
     ZydisDisassembledInstruction instruction{};
     int length = 0;
 #ifdef _WIN64
-    while (ZYAN_SUCCESS(ZydisDisassembleIntel(ZYDIS_MACHINE_MODE_LONG_64, runtime_address, _buffer + offset, _length - offset, &instruction))) {
+    while (ZYAN_SUCCESS(ZydisDisassembleIntel(ZYDIS_MACHINE_MODE_LONG_64, runtime_address, _buffer + offset, _length - offset, &instruction))) {//disassemble
 #else
-    while (ZYAN_SUCCESS(ZydisDisassembleIntel(ZYDIS_MACHINE_MODE_LONG_COMPAT_32, runtime_address, _buffer + offset, _length - offset, &instruction))) {
+    while (ZYAN_SUCCESS(ZydisDisassembleIntel(ZYDIS_MACHINE_MODE_LONG_COMPAT_32, runtime_address, _buffer + offset, _length - offset, &instruction))) {//disassemble
 #endif // !_WIN64
         offset += instruction.info.length;
-        runtime_address += instruction.info.length;
-        length += instruction.info.length;
-        if (instruction.info.mnemonic == ZYDIS_MNEMONIC_RET)
-            break;
+        runtime_address += instruction.info.length;//add instruction length
+        length += instruction.info.length;//add instruction length
+        if (instruction.info.mnemonic == ZYDIS_MNEMONIC_RET) break;
     }
     return length;
 }
-template<typename T>struct remove_const_pointer { using type = typename std::remove_pointer<std::remove_const_t<T>>::type; };
-template<typename T> using remove_const_pointer_t = typename remove_const_pointer<T>::type;
+template<typename T>struct remove_const_pointer { using type = typename std::remove_pointer<std::remove_const_t<T>>::type; };//remove const pointer
+template<typename T> using remove_const_pointer_t = typename remove_const_pointer<T>::type;//remove const pointer
 template<class Tx, class Ty> inline size_t _ucsicmp(const Tx* str1, const Ty* str2) {//ignore case compare ignore type wchar_t wstring or char string
     if (!str1 || !str2) throw std::exception("str1 or str2 is nullptr");
     std::wstring wstr1{}, wstr2{};
     std::string  strtemp{};
     if constexpr (!std::is_same_v<remove_const_pointer_t<Tx>, wchar_t>) {
         strtemp = str1;
-        wstr1 = std::wstring(strtemp.begin(), strtemp.end());
-    }
-    else {
+        wstr1 = std::wstring(strtemp.begin(), strtemp.end());//transform to wstring
+    }else {
         wstr1 = str1;
     }
     if constexpr (!std::is_same_v<remove_const_pointer_t<Ty>, wchar_t>) {
         strtemp = str2;
-        wstr2 = std::wstring(strtemp.begin(), strtemp.end());
-    }
-    else {
+        wstr2 = std::wstring(strtemp.begin(), strtemp.end());//transform to wstring
+    }else {
         wstr2 = str2;
     }
-    std::transform(wstr1.begin(), wstr1.end(), wstr1.begin(), towlower);
-    std::transform(wstr2.begin(), wstr2.end(), wstr2.begin(), towlower);
+    std::transform(wstr1.begin(), wstr1.end(), wstr1.begin(), towlower);//transform to lower
+    std::transform(wstr2.begin(), wstr2.end(), wstr2.begin(), towlower);//transform to lower
     return wstr1.compare(wstr2);
 }
 #define DELETE_COPYMOVE_CONSTRUCTOR(TYPE) TYPE(const TYPE&)=delete;TYPE(TYPE&&) = delete;void operator= (const TYPE&) = delete;void operator= (TYPE&&) = delete;
@@ -76,11 +73,11 @@ public:
         static std::once_flag flag{};
         static std::shared_ptr<T> instance = nullptr;
         if (!instance) {
-            std::call_once(flag, [&]() {
-                instance = std::make_shared<T>(args...);
+            std::call_once(flag, [&]() {//call once
+                instance = std::make_shared<T>(args...);//element constructor through parameters
             });
         }
-        return *instance.get();
+        return *instance.get();//return instance
     }
 };
 template <class... Args>
@@ -89,33 +86,33 @@ struct ThreadData {//Thread Data Struct
 };
 template <class...Args, size_t... Indices>
 __forceinline decltype(auto) ThreadFunctionImpl(ThreadData<Args...>* threadData, std::index_sequence<Indices...>) noexcept {//thread function impliment
-    using RetType = decltype(std::get<0>(threadData->datas)(std::get<Indices + 1>(threadData->datas)...));
-    if (threadData) return std::get<0>(threadData->datas)(std::get<Indices + 1>(threadData->datas)...);
-    return RetType();
+    using RetType = decltype(std::get<0>(threadData->datas)(std::get<Indices + 1>(threadData->datas)...));//get return type
+    if (threadData) return std::get<0>(threadData->datas)(std::get<Indices + 1>(threadData->datas)...);//if threadData is not nullptr call function
+    return RetType();//return RetType
 }
 template <class... Args>
 __declspec(noinline)  decltype(auto) ThreadFunction(void* param)noexcept {//thread function
     auto threadData = static_cast<ThreadData<Args...>*>(param);
-    if (threadData)return ThreadFunctionImpl(threadData, std::make_index_sequence<sizeof...(Args) - 1>{});
-    using RetValue = decltype(ThreadFunctionImpl(threadData, std::make_index_sequence<sizeof...(Args) - 1>{}));
-    return RetValue();
+    if (threadData)return ThreadFunctionImpl(threadData, std::make_index_sequence<sizeof...(Args) - 1>{});//if threadData is not nullptr call ThreadFunctionImpl
+    using RetValue = decltype(ThreadFunctionImpl(threadData, std::make_index_sequence<sizeof...(Args) - 1>{}));//get return type
+    return RetValue();//return RetValue
 }
 class Shared_Ptr;
 template<class T>Shared_Ptr make_Shared() { return Shared_Ptr(sizeof(T)); }//to make Shared_Ptr
 template<class T>Shared_Ptr make_Shared(size_t nsize) { return Shared_Ptr(sizeof(T) * nsize); }//to make Shared_Ptr
 class Process :public SingleTon<Process> {//Singleton
-    HANDLE m_hProcess;
-    DWORD m_pid;
-    std::atomic_bool m_bAttached;
-    std::vector<Shared_Ptr> m_vecAllocMem;
+    HANDLE m_hProcess=INVALID_HANDLE_VALUE;
+    DWORD m_pid;//process id
+    std::atomic_bool m_bAttached;//atomic bool
+    std::vector<Shared_Ptr> m_vecAllocMem;//vector for allocated memory
     template<typename T, typename ...Args>
-    void process(T& arg, Args&...args) {
+    void process(T& arg, Args&...args) {//partially specialized template
         processparameter(arg);
 		if constexpr (sizeof...(args)>0) process(args...);
     }
     template<typename T>void processparameter(T& arg) {}
-    void processparameter(const char*& arg);
-    void processparameter(const wchar_t*& arg);
+    void processparameter(const char*& arg);//process const char* parameter
+    void processparameter(const wchar_t*& arg);//process const wchar_t* parameter
 public:
     void Attach(const char* _szProcessName) {//attach process
         //get process id
