@@ -2,7 +2,7 @@
 #include <Windows.h>
 #include <Zydis/Zydis.h>//through vcpkg install Zydis:x64-windows:vcpkg.exe install Zydis:x64-windows-static
 #include <TlHelp32.h>
-#pragma comment(lib,"Zydis.lib")
+#pragma comment(lib,"Zydis.lib")//vcpkg use static lib
 #include <atomic>
 #include <algorithm>
 #include <mutex>
