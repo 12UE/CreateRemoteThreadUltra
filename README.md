@@ -20,7 +20,7 @@ However, in certain cases, there is a need to pass multiple parameters to the re
 
 One common solution is to create a custom data structure that encapsulates the multiple parameters and pass a pointer to this structure as the lpParameter parameter to the `CreateRemoteThread` function. In the remote thread function, we can dereference this pointer to access the passed multiple parameters.
 
-In this example, we define a ThreadParams structure that contains the four parameters required by the `MessageBox` function. Then, in the remote thread function RemoteThreadProc, we forcefully cast the lpParam parameter to the ThreadParams* type and access the passed multiple parameters through that pointer. Finally, we release the memory allocated for the parameter structure.
+In this example, we define a `ThreadData` structure that contains the four parameters required by the `MessageBox` function. Then, in the remote thread function `ThreadFunction`, we forcefully cast the lpParam parameter to the `ThreadData*` type and access the passed multiple parameters through that pointer. Finally, we release the memory allocated for the parameter structure.
 
 By using this approach, we can pass multiple parameters to the remote thread function through the CreateRemoteThread function and perform the desired operations within the remote thread. This method overcomes the limitation of passing only one parameter and allows us to use multiple parameters in the remote thread function.
 
@@ -58,7 +58,7 @@ API 的第四个参数（`lpStartAddress`）需要传递	`LoadLibrary`	 函数的地址，而第五个
 
 一种常见的解决方案是创建一个自定义的数据结构，将多个参数封装在这个结构中，并将指向该结构的指针作为 `lpParameter` 参数传递给 `CreateRemoteThread` 函数。在远程线程函数中，我们可以通过对该指针进行解引用来访问传递的多个参数。
 
-在这个例子中，我们定义了一个 ThreadParams 结构，该结构包含 `MessageBox` 函数所需的四个参数。然后，在远程线程函数 RemoteThreadProc 中，我们将 `lpParam` 参数强制转换为 ThreadParams* 类型，并通过该指针访问传递的多个参数。最后，我们释放为参数结构分配的内存。
+在这个例子中，我们定义了一个 `ThreadData` 结构，该结构包含 `MessageBox` 函数所需的四个参数。然后，在远程线程函数 `ThreadFunction` 中，我们将 `lpParam` 参数强制转换为 ThreadData* 类型，并通过该指针访问传递的多个参数。最后，我们释放为参数结构分配的内存。
 
 使用这种方法，我们可以通过 `CreateRemoteThread` 函数将多个参数传递给远程线程函数，并在远程线程中执行所需的操作。这种方法克服了只能传递一个参数的限制，允许我们在远程线程函数中使用多个参数。# 参考资料
 # 引用
