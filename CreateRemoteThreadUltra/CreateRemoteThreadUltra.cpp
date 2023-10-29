@@ -1,5 +1,4 @@
-﻿
-#include <iostream>
+﻿#include <iostream>
 #include <Windows.h>
 #include <Zydis/Zydis.h>//through vcpkg install Zydis:x64-windows:vcpkg.exe install Zydis:x64-windows-static
 #include <TlHelp32.h>
@@ -139,9 +138,7 @@ public:
         return 0;
     }
     int _FreeMemApi(LPVOID lpAddress) {//free memory
-        if (m_bAttached) {
-            return VirtualFreeEx(m_hProcess, lpAddress, 0, MEM_RELEASE);
-        }
+        if (m_bAttached)return VirtualFreeEx(m_hProcess, lpAddress, 0, MEM_RELEASE);
         return 0;
     }
     void RemoteThreadShell(BYTE* Shell, BYTE* param, int nShellSize, int ParamnSize);//Create Remote Thread and execute Shell
@@ -245,8 +242,7 @@ int main()
     Process.RemoteThreadCall(MessageBoxA, nullptr, "Hello World", "Hello World", 0);//call MessageBoxA
 
 }
-void Process::processparameter(const char*& arg)//process parameter
-{
+void Process::processparameter(const char*& arg){//process parameter
     int nlen = strlen(arg) + 1;
     auto p = make_Shared<char>(nlen * sizeof(char));
     if (p) {
@@ -255,9 +251,7 @@ void Process::processparameter(const char*& arg)//process parameter
         arg = (const char*)p.raw();
     }
 }
-
-void Process::processparameter(const wchar_t*& arg)//process parameter
-{
+void Process::processparameter(const wchar_t*& arg){//process parameter
     int nlen = wcslen(arg) + 1;
     auto p = make_Shared<wchar_t>(nlen * sizeof(wchar_t));
     if (p) {
@@ -266,7 +260,6 @@ void Process::processparameter(const wchar_t*& arg)//process parameter
         arg = (const wchar_t*)p.raw();
     }
 }
-
 void Process::RemoteThreadShell(BYTE* Shell, BYTE* param, int nShellSize, int ParamnSize){
     if (m_bAttached) {
         if (!Shell || nShellSize == 0)throw std::exception("Shell is nullptr");
