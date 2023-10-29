@@ -60,6 +60,6 @@ API 的第四个参数（`lpStartAddress`）需要传递	`LoadLibrary`	 函数的地址，而第五个
 
 在这个例子中，我们定义了一个 `ThreadData` 结构，该结构包含 `MessageBox` 函数所需的四个参数。然后，在远程线程函数 `ThreadFunction` 中，我们将 `lpParam` 参数强制转换为 `ThreadData*` 类型，并通过该指针访问传递的多个参数。最后，我们释放为参数结构分配的内存。
 
-使用这种方法，我们可以通过 `CreateRemoteThread` 函数将多个参数传递给远程线程函数，并在远程线程中执行所需的操作。这种方法克服了只能传递一个参数的限制，允许我们在远程线程函数中使用多个参数。# 参考资料
+使用这种方法，我们可以通过 `CreateRemoteThread` 函数将多个参数传递给远程线程函数，并在远程线程中执行所需的操作。这种方法克服了只能传递一个参数的限制，允许我们在远程线程函数中使用多个参数。
 # 引用
 [CreateRemoteThreadPlus](https://github.com/lem0nSec/CreateRemoteThreadPlus)
