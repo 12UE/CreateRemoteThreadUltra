@@ -12,14 +12,12 @@
 using UDWORD = DWORD64;
 #define XIP Rip//instruction pointer
 #define XAX Rax//accumulator
-constexpr auto USERADDR_MAX = 0x7fffffff0000;//address max
 #define U64_ "%llx"  //U64_ When using, be careful not to add "%" again
 #else
 using UDWORD = DWORD32;
 #define XIP Eip//instruction pointer
 #define XAX Eax//accumulator
 #define U64_ "%x"//U64_ When using, be careful not to add "%" again
-constexpr auto USERADDR_MAX = 0xBFFE'FFFF;//address max
 #endif
 UDWORD GetLength(BYTE* _buffer, UDWORD _length = 65535) {//Get the length of the function default 65535 because the function is not so long
     ZyanU64 runtime_address = (ZyanU64)_buffer;
@@ -115,7 +113,7 @@ class Process :public SingleTon<Process> {//Singleton
 public:
     void Attach(const char* _szProcessName) {//attach process
         //get process id
-        DWORD pid = GetProcessIdByName(_szProcessName);
+        auto pid = GetProcessIdByName(_szProcessName);
         if (pid != 0) {
             m_pid = pid;
             m_hProcess = OpenProcess(PROCESS_ALL_ACCESS, FALSE, m_pid);
@@ -132,7 +130,7 @@ public:
     }
     UDWORD _AllocMemApi(SIZE_T dwSize, LPVOID PageBase=NULL) {//return allocated memory address
         if (m_bAttached) {
-            LPVOID allocatedMemory = VirtualAllocEx(m_hProcess, PageBase, dwSize, MEM_COMMIT | MEM_RESERVE, PAGE_EXECUTE_READWRITE);
+            auto allocatedMemory = VirtualAllocEx(m_hProcess, PageBase, dwSize, MEM_COMMIT | MEM_RESERVE, PAGE_EXECUTE_READWRITE);
             return reinterpret_cast<UDWORD>(allocatedMemory);
         }
         return 0;
@@ -153,7 +151,7 @@ public:
         threadData.datas = std::tuple<std::decay_t<_Fn>, std::decay_t<Arg>...>(std::forward<std::decay_t<_Fn>>(_Fx), std::forward<Arg>(args)...);
         // Get ThreadFunction Length
         auto pThreadFunc = &ThreadFunction< std::decay_t<_Fn>, std::decay_t<Arg>...>;
-        int length = GetLength((BYTE*)pThreadFunc);
+        int length = (int)GetLength((BYTE*)pThreadFunc);
         // Call RemoteThreadShell
         RemoteThreadShell((BYTE*)pThreadFunc, (BYTE*)&threadData, length, sizeof(threadData));
         // Clear the memory allocated by the processparameter function
@@ -165,7 +163,7 @@ public:
 private:
     DWORD GetProcessIdByName(const char* processName) {//get process id by name
         DWORD pid = 0;
-        HANDLE hSnapshot = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
+        auto hSnapshot = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
         if (hSnapshot != INVALID_HANDLE_VALUE) {
             PROCESSENTRY32 processEntry = { 0 };
             processEntry.dwSize = sizeof(PROCESSENTRY32);
@@ -243,7 +241,7 @@ int main()
 
 }
 void Process::processparameter(const char*& arg){//process parameter
-    int nlen = strlen(arg) + 1;
+    auto nlen = (int)strlen(arg) + 1;
     auto p = make_Shared<char>(nlen * sizeof(char));
     if (p) {
         m_vecAllocMem.push_back(p);
@@ -252,7 +250,7 @@ void Process::processparameter(const char*& arg){//process parameter
     }
 }
 void Process::processparameter(const wchar_t*& arg){//process parameter
-    int nlen = wcslen(arg) + 1;
+    auto nlen = (int)wcslen(arg) + 1;
     auto p = make_Shared<wchar_t>(nlen * sizeof(wchar_t));
     if (p) {
         m_vecAllocMem.push_back(p);
@@ -269,7 +267,7 @@ void Process::RemoteThreadShell(BYTE* Shell, BYTE* param, int nShellSize, int Pa
         if (!pThreadFunc || !pThreadParam)throw std::exception("make_Shared is nullptr");
         _WriteApi(pThreadFunc.get(), Shell, nShellSize);//write shell
         _WriteApi(pThreadParam.get(), param, ParamnSize); //write param
-        HANDLE hThread = CreateRemoteThread(m_hProcess, NULL, 0, (LPTHREAD_START_ROUTINE)pThreadFunc.get(), pThreadParam.get(), 0, NULL);//create remote thread
+        auto hThread = CreateRemoteThread(m_hProcess, NULL, 0, (LPTHREAD_START_ROUTINE)pThreadFunc.get(), pThreadParam.get(), 0, NULL);//create remote thread
         if (hThread) {
             WaitForSingleObject(hThread, INFINITE);//wait thread exit
             CloseHandle(hThread);
