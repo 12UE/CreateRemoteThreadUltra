@@ -46,7 +46,7 @@ HANDLE WINAPI CreateRemoteThread(
 
 通过使用`CreateRemoteThread`，可以通过在目标进程中创建一个新的线程来"强制"目标进程加载任意的 DLL。
 
-API 的第四个参数（lpStartAddress）需要传递	`LoadLibrary`	 函数的地址，而第五个参数（`lpParameter`）需要传递指向要加载的 DLL 字符串的指针。
+API 的第四个参数（`lpStartAddress`）需要传递	`LoadLibrary`	 函数的地址，而第五个参数（`lpParameter`）需要传递指向要加载的 DLL 字符串的指针。
 
 然而，当远程函数需要多个参数时，就会面临一个挑战。标准的 DLL 注入之所以有效，是因为 `LoadLibrary` 函数只需要一个参数。但是，如果远程函数（例如 `MessageBox`）需要多个参数时，应该怎么办呢？例如，`MessageBox` 通常需要四个参数。
 
