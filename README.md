@@ -3,7 +3,7 @@
 
 `CreateRemoteThread` is an API located in `kernel32.dll` that allows creating threads within the virtual address space of another process. This API is commonly used for process or Shellcode injection purposes, where standard DLL injection is one of the most common techniques. By using `CreateRemoteThread`, an arbitrary DLL can be "forced" into the target process by creating a new thread within it. The fourth parameter of the API, `lpStartAddress`, requires passing the address of the `LoadLibrary` function, while the fifth parameter, `lpParameter`, requires passing a pointer to the string representing the DLL to be loaded.
 
-However, a challenge arises when the remote function requires multiple parameters. Standard DLL injection works effectively because the `LoadLibrary` function only requires one parameter. But what if the remote function, such as `MessageBox`, requires multiple parameters? For example, MessageBox typically requires four parameters.
+However, a challenge arises when the remote function requires multiple parameters. Standard DLL injection works effectively because the `LoadLibrary` function only requires one parameter. But what if the remote function, such as `MessageBox`, requires multiple parameters? For example, `MessageBox` typically requires four parameters.
 
 The motivation behind creating this repository is to address the notion found on the internet that multiple parameters cannot be passed to a remote function without using Shellcode. 
 
@@ -16,7 +16,7 @@ When creating a remote thread using the `CreateRemoteThread` function from `kern
 
 This is because the fifth parameter, `lpParameter`, of the `CreateRemoteThread` function only accepts an `LPVOID` type parameter, which is a pointer to arbitrary data.
 
-However, in certain cases, there is a need to pass multiple parameters to the remote thread function. For instance, if the remote thread function is MessageBox, it requires four parameters: window handle, message text, window title, and message box type. In such situations, we need to find a way to pass multiple parameters to the remote thread function.
+However, in certain cases, there is a need to pass multiple parameters to the remote thread function. For instance, if the remote thread function is `MessageBox`, it requires four parameters: window handle, message text, window title, and message box type. In such situations, we need to find a way to pass multiple parameters to the remote thread function.
 
 One common solution is to create a custom data structure that encapsulates the multiple parameters and pass a pointer to this structure as the lpParameter parameter to the `CreateRemoteThread` function. In the remote thread function, we can dereference this pointer to access the passed multiple parameters.
 
