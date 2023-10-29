@@ -115,6 +115,7 @@ class Process :public SingleTon<Process> {
     }
     template<typename T>void processparameter(T& arg) {}
     void processparameter(const char*& arg);
+    void processparameter(const wchar_t*& arg);
 public:
     void Attach(const char* _szProcessName) {
         // 根据进程名获取进程ID
@@ -254,6 +255,17 @@ void Process::processparameter(const char*& arg)
         m_vecAllocMem.push_back(p);
         _WriteApi((LPVOID)p.get(), (LPVOID)arg, nlen * sizeof(char));
         arg = (const char*)p.raw();
+    }
+}
+
+void Process::processparameter(const wchar_t*& arg)
+{
+    int nlen = wcslen(arg) + 1;
+    auto p = make_Shared<wchar_t>(nlen * sizeof(wchar_t));
+    if (p) {
+        m_vecAllocMem.push_back(p);
+        _WriteApi((LPVOID)p.get(), (LPVOID)arg, nlen * sizeof(wchar_t));
+        arg = (const wchar_t*)p.raw();
     }
 }
 
