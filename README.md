@@ -1,7 +1,7 @@
 # Create Remote Thread Ultra
 `CreateRemoteThread`: How to pass multiple parameters to a remote thread function without using Shellcode. Supports x86 and x64 relaese Support LLVM.
 
-`CreateRemoteThread` is an API located in `kernel32.dll` that allows creating threads within the virtual address space of another process. This API is commonly used for process or Shellcode injection purposes, where standard DLL injection is one of the most common techniques. By using `CreateRemoteThread`, an arbitrary DLL can be "forced" into the target process by creating a new thread within it. The fourth parameter of the API, `lpStartAddress`, requires passing the address of the LoadLibrary function, while the fifth parameter, `lpParameter`, requires passing a pointer to the string representing the DLL to be loaded.
+`CreateRemoteThread` is an API located in `kernel32.dll` that allows creating threads within the virtual address space of another process. This API is commonly used for process or Shellcode injection purposes, where standard DLL injection is one of the most common techniques. By using `CreateRemoteThread`, an arbitrary DLL can be "forced" into the target process by creating a new thread within it. The fourth parameter of the API, `lpStartAddress`, requires passing the address of the `LoadLibrary` function, while the fifth parameter, `lpParameter`, requires passing a pointer to the string representing the DLL to be loaded.
 
 However, a challenge arises when the remote function requires multiple parameters. Standard DLL injection works effectively because the `LoadLibrary` function only requires one parameter. But what if the remote function, such as `MessageBox`, requires multiple parameters? For example, MessageBox typically requires four parameters.
 
@@ -46,7 +46,7 @@ HANDLE WINAPI CreateRemoteThread(
 
 通过使用`CreateRemoteThread`，可以通过在目标进程中创建一个新的线程来"强制"目标进程加载任意的 DLL。
 
-API 的第四个参数（lpStartAddress）需要传递 LoadLibrary 函数的地址，而第五个参数（lpParameter）需要传递指向要加载的 DLL 字符串的指针。
+API 的第四个参数（lpStartAddress）需要传递	`LoadLibrary`	 函数的地址，而第五个参数（`lpParameter`）需要传递指向要加载的 DLL 字符串的指针。
 
 然而，当远程函数需要多个参数时，就会面临一个挑战。标准的 DLL 注入之所以有效，是因为 `LoadLibrary` 函数只需要一个参数。但是，如果远程函数（例如 `MessageBox`）需要多个参数时，应该怎么办呢？例如，`MessageBox` 通常需要四个参数。
 
